@@ -1,7 +1,9 @@
 package com.unbxd;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.*;
 
 /**
@@ -12,20 +14,26 @@ public class GetProductsExecutor {
     List<Future<Boolean>> list;
     int numberOfProducts;
     int numberOfProductsPerThread;
+    int numberOfConcurrentThreads;
+    int totalNumberOfThreadsRequired;
 
-    public GetProductsExecutor(int numberOfProducts) {
-        this.executor = Executors.newFixedThreadPool(5);
-        this.list = new ArrayList<Future<Boolean>>();
+    public GetProductsExecutor(int numberOfProducts) throws IOException {
+        UnbxdProperties propertiesObj = new UnbxdProperties();
+        Properties properties = propertiesObj.getProperties();
+
         this.numberOfProducts = numberOfProducts;
-        this.numberOfProductsPerThread = 10;
+        this.numberOfProductsPerThread = Integer.parseInt(properties.getProperty("NUMBER_OF_PRODUCTS_PER_THREAD"));
+        this.numberOfConcurrentThreads = Integer.parseInt(properties.getProperty("NUMBER_OF_CUNCURRENT_THREADS"));
+        this.totalNumberOfThreadsRequired = this.numberOfProducts / this.numberOfProductsPerThread;
+
+        this.executor = Executors.newFixedThreadPool(this.numberOfConcurrentThreads);
+        this.list = new ArrayList<Future<Boolean>>();
     }
     public void getProducts() {
-        ExecutorService executor = Executors.newFixedThreadPool(5);
-        List<Future<Boolean>> list = new ArrayList<Future<Boolean>>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < this.totalNumberOfThreadsRequired; i++) {
             Callable<Boolean> worker = new PushToMongoCallable(i);
-            Future<Boolean> submit = executor.submit(worker);
-            list.add(submit);
+            Future<Boolean> submit = this.executor.submit(worker);
+            this.list.add(submit);
         }
         for (Future<Boolean> future : list) {
             try {
