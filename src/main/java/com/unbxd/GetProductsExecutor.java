@@ -26,7 +26,9 @@ public class GetProductsExecutor {
         this.numberOfProducts = numberOfProducts;
         this.numberOfProductsPerThread = productsPerThread;
         this.numberOfConcurrentThreads = Integer.parseInt(properties.getProperty("NUMBER_OF_CUNCURRENT_THREADS"));
-        this.totalNumberOfThreadsRequired = this.numberOfProducts / this.numberOfProductsPerThread;
+        this.totalNumberOfThreadsRequired = (int) Math.ceil((double) this.numberOfProducts / this.numberOfProductsPerThread);
+        System.out.println("Total number of products: " + this.numberOfProducts);
+        System.out.println("Total number of products per thread: " + this.numberOfProductsPerThread);
         System.out.println("Total number of threads: " + this.totalNumberOfThreadsRequired);
         this.executor = Executors.newFixedThreadPool(this.numberOfConcurrentThreads);
         this.list = new ArrayList<Future<Boolean>>();
