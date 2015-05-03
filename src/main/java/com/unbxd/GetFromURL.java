@@ -65,6 +65,7 @@ public class GetFromURL {
     }
 
     public JSONObject getJSONResponse() throws JSONException {
-        return new JSONObject(this.response);
+        System.out.println(this.response.trim());
+        return new JSONObject(this.response.trim());
     }
 }

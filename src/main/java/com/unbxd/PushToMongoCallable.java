@@ -3,6 +3,8 @@ package com.unbxd;
 /**
  * Created by albin on 4/29/15.
  */
+import org.json.JSONObject;
+
 import java.util.concurrent.Callable;
 
 public class PushToMongoCallable implements Callable<Boolean> {
@@ -26,6 +28,8 @@ public class PushToMongoCallable implements Callable<Boolean> {
     public Boolean call() throws Exception {
         System.out.println("URL: " + this.url);
         // Call the API and push products to mongo
+        GetFromURL getFromURL = new GetFromURL(this.url);
+        JSONObject json = getFromURL.getJSONResponse();
         return (this.pageNumber % 2 == 0) ? true : false;
     }
 }
