@@ -16,14 +16,24 @@ public class App
     public static void main(String[] args) throws Exception {
         ArgumentManager arguments = new ArgumentManager(args);
         if(arguments.processArguments()) {
-            String baseUrl = "http://magento-sandbox.cloudapp.net/magento/index.php/recscore/catalog/products?site=Main%20Website&auth=aHR0cDovL21hZ2VudG8tc2FuZGJveC5jbG91ZGFwcC5uZXQvbW";
+//            String baseUrl = "http://magento-sandbox.cloudapp.net/magento/index.php/recscore/catalog/products?site=Main%20Website&auth=aHR0cDovL21hZ2VudG8tc2FuZGJveC5jbG91ZGFwcC5uZXQvbW";
             int productsPerThread = arguments.productsPerThread;
-            GetFromURL numberOfProductsResponse = new GetFromURL("http://magento-sandbox.cloudapp.net/magento/index.php/recscore/catalog/size?site=Main%20Website&auth=aHR0cDovL21hZ2VudG8tc2FuZGJveC5jbG91ZGFwcC5uZXQvbW");
+            GetFromURL numberOfProductsResponse;
+            if(arguments.username.equals("")) {
+                System.out.println("Without auth");
+                numberOfProductsResponse = new GetFromURL(arguments.baseUrl);
+            } else {
+                System.out.println("With auth");
+                numberOfProductsResponse = new GetFromURL(arguments.baseUrl, arguments.username, arguments.password);
+            }
+
             int numberOfProducts = numberOfProductsResponse.getJSONResponse().getInt("size");
+
+            System.out.println("NUM PRODUCTS: " + numberOfProducts);
 
             // Process Schema separately
             System.out.println("Processing schema");
-            GetFromURL getSchemaFromUrl = new GetFromURL(baseUrl + "&limit=1");
+            GetFromURL getSchemaFromUrl = new GetFromURL(arguments.baseUrl + "&limit=1");
             JSONObject schemaObject = getSchemaFromUrl.getJSONResponse();
             JSONArray schemas = schemaObject.getJSONObject("feed").getJSONObject("catalog").getJSONArray("schema");
             SchemaEntity schemaEntity = new SchemaEntity(arguments.iSiteName);
@@ -34,7 +44,8 @@ public class App
             // Schema processed
 
             System.out.println("Start processing products");
-            GetProductsExecutor productsExecutor = new GetProductsExecutor(numberOfProducts, productsPerThread, baseUrl);
+            URLManager urlManager = new URLManager(arguments.baseUrl);
+            GetProductsExecutor productsExecutor = new GetProductsExecutor(numberOfProducts, productsPerThread, urlManager.getProductsUrl());
             productsExecutor.pushProductsToMongo(arguments.iSiteName);
             System.out.println("All products pushed to mongo");
         } else {

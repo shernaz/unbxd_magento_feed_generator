@@ -4,11 +4,14 @@ package com.unbxd;
  * Created by albin on 4/29/15.
  */
 
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -22,17 +25,45 @@ public class GetFromURL {
 
     private String url;
     private String response;
+    private String username;
+    private String password;
+
     private JSONObject jsonResponse;
 
     public GetFromURL(String url) {
         this.url = url;
         this.response = "";
+        this.username = "";
+        this.password = "";
+        this.callURL();
+    }
+
+    public GetFromURL(String url, String username, String password) {
+        this.url = url;
+        this.response = "";
+        this.username = username;
+        this.password = password;
         this.callURL();
     }
 
     public GetFromURL callURL() {
         StringBuilder sb = new StringBuilder();
         URLConnection urlConn = null;
+        System.out.println("Calling url: " + this.url);
+        if(!this.username.equals("")) {
+            System.out.println("Including authentication headers");
+            String userpass = this.username + ":" + this.password;
+//            String encoded = new sun.misc.BASE64Encoder().encode (userpass.getBytes());
+            String basicAuth = null;
+//            try {
+//                basicAuth = DatatypeConverter.printBase64Binary(userpass.getBytes("UTF-8"));
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            }
+            byte[] encodedBytes = Base64.encodeBase64(userpass.getBytes());
+            basicAuth = "Basic " + encodedBytes;
+            urlConn.setRequestProperty("Authorization", basicAuth);
+        }
         InputStreamReader in = null;
         try {
             URL url = new URL(this.url);

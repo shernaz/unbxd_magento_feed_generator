@@ -11,6 +11,9 @@ public class ArgumentManager {
     public int productsPerThread;
     public String iSiteName;
     public String secretKey;
+    public Boolean authentication;
+    public String username;
+    public String password;
     String allowedArgs[];
     String args[];
 
@@ -20,11 +23,15 @@ public class ArgumentManager {
         this.iSiteName = "";
         this.secretKey = "";
         this.productsPerThread = 0;
+        this.username = "";
+        this.password = "";
+        this.authentication = false;
+
         if (args.length % 2 != 0) {
             throw new Exception("Invalid number of arguments");
         }
         allowedArgs = new String[]{
-                "baseurl", "per-thread", "site-name", "secret-key"
+                "baseurl", "per-thread", "site-name", "secret-key", "username", "password"
         };
 
 
@@ -59,6 +66,11 @@ public class ArgumentManager {
                 this.iSiteName = value;
             } else if(key.equals("secret-key")) {
                 this.secretKey = value;
+            } else if(key.equals("username")) {
+                this.username = value;
+                this.authentication = true;
+            } else if(key.equals("password")) {
+                this.password = value;
             } else {
                 return false;
             }
