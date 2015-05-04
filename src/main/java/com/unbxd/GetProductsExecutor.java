@@ -21,19 +21,15 @@ public class GetProductsExecutor {
     public GetProductsExecutor(int numberOfProducts, int productsPerThread, String baseUrl) throws IOException {
         this.baseUrl = baseUrl;
         UnbxdProperties propertiesObj = new UnbxdProperties();
-        Properties properties = propertiesObj.getProperties();
 
         this.numberOfProducts = numberOfProducts;
         this.numberOfProductsPerThread = productsPerThread;
-        this.numberOfConcurrentThreads = Integer.parseInt(properties.getProperty("NUMBER_OF_CUNCURRENT_THREADS"));
+        this.numberOfConcurrentThreads = Integer.parseInt(propertiesObj.getProperty("NUMBER_OF_CUNCURRENT_THREADS"));
         this.totalNumberOfThreadsRequired = (int) Math.ceil((double) this.numberOfProducts / this.numberOfProductsPerThread);
-        System.out.println("Total number of products: " + this.numberOfProducts);
-        System.out.println("Total number of products per thread: " + this.numberOfProductsPerThread);
-        System.out.println("Total number of threads: " + this.totalNumberOfThreadsRequired);
         this.executor = Executors.newFixedThreadPool(this.numberOfConcurrentThreads);
         this.list = new ArrayList<Future<Boolean>>();
     }
-    public void getProducts() {
+    public void pushProductsToMongo() {
         for (int i = 0; i < this.totalNumberOfThreadsRequired; i++) {
             Callable<Boolean> worker = new PushToMongoCallable(i, this.baseUrl, this.numberOfProductsPerThread);
             Future<Boolean> submit = this.executor.submit(worker);

@@ -10,19 +10,28 @@ import java.util.Properties;
  */
 
 public class UnbxdProperties {
-    public Properties getProperties() throws IOException {
-        Properties prop = new Properties();
+    private static UnbxdProperties property = null;
+    private Properties prop = null;
+    protected UnbxdProperties() throws IOException {
+        // So that this class cannot be instantiated directly outside of the class
+        this.prop = new Properties();
         String propFileName = "config.properties";
-
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
-
         if (inputStream != null) {
-            prop.load(inputStream);
+            this.prop.load(inputStream);
         } else {
             throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
         }
+    }
 
-        return prop;
+    public static UnbxdProperties getInstance() throws IOException {
+        if(property == null) {
+            property = new UnbxdProperties();
+        }
+        return property;
+    }
+    public String getProperty(String propertyName) throws IOException {
+        return this.prop.getProperty(propertyName).replaceAll("^\"|\"$", "");
     }
 
 }

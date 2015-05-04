@@ -52,17 +52,13 @@ public class ArgumentManager {
 
         if (Arrays.asList(this.allowedArgs).contains(key)) {
             if(key.equals("baseurl")) {
-                System.out.println("Setting baseurl to " + value);
                 this.baseUrl = value;
             } else if(key.equals("per-thread")) {
                 this.productsPerThread = Integer.parseInt(value);
-                System.out.println("Setting per-thread to " + value);
             } else if(key.equals("site-name")) {
                 this.iSiteName = value;
-                System.out.println("Setting site-name to " + value);
             } else if(key.equals("secret-key")) {
                 this.secretKey = value;
-                System.out.println("Setting secret-key to " + value);
             } else {
                 return false;
             }

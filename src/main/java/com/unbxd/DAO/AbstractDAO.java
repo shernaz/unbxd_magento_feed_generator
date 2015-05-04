@@ -24,14 +24,15 @@ public class AbstractDAO {
 
     public AbstractDAO() throws IOException {
         if (null == this.db || null == this.collection){
-            unbxdProperties = new UnbxdProperties();
-            properties = unbxdProperties.getProperties();
-            dbName = properties.getProperty("MONGO_DB");
+
+            unbxdProperties = UnbxdProperties.getInstance();
+            dbName = unbxdProperties.getProperty("MONGO_DB");
             MongoClientOptions options = MongoClientOptions.builder()
                     .connectionsPerHost(100)
                     .autoConnectRetry(true)
+                    .socketKeepAlive(true)
                     .build();
-            this.mongoClient = new MongoClient("localhost", options);
+            this.mongoClient = new MongoClient(new ServerAddress("localhost"), options);
             this.db = mongoClient.getDB(dbName);
             this.collectionName = "";
         }
@@ -42,11 +43,15 @@ public class AbstractDAO {
         this.collection = this.db.getCollection(collectionName);
         return this;
     }
+    public DB getDb() {
+        return this.db;
+    }
+
+    public DBCollection getCollection() {
+        return this.collection;
+    }
 
     public AbstractDAO insertDocuments(List<DBObject> documents) {
-//        DBObject document1 = new BasicDBObject();
-//        document1.put("name", "Kiran");
-//        this.collection.insert(document1);
         try {
             this.collection.insert(documents);
         } catch (Exception ex) {
