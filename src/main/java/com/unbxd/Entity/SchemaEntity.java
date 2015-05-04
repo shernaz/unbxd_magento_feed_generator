@@ -19,13 +19,9 @@ public class SchemaEntity extends AbstractEntity
     public SchemaEntity(String iSiteName) throws IOException {
         super(iSiteName);
         this.setUniqueField("fieldName");
+        this.setCollection("schema_");
     }
 
 
-    public SchemaEntity setCollection() {
-        this.collectionName = "schema_" + General.formatISiteName(this.iSiteName);
-        dao.setCollection(this.collectionName);
-        return this;
-    }
 
 }

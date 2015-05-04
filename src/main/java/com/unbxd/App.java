@@ -27,14 +27,15 @@ public class App
             JSONObject schemaObject = getSchemaFromUrl.getJSONResponse();
             JSONArray schemas = schemaObject.getJSONObject("feed").getJSONObject("catalog").getJSONArray("schema");
             SchemaEntity schemaEntity = new SchemaEntity(arguments.iSiteName);
-            schemaEntity.setCollection();
             for (int i = 0; i< schemas.length(); i++) {
                 schemaEntity.upsert(schemas.getJSONObject(i));
             }
             System.out.println("Schema inserted into mongo");
 
-//            GetProductsExecutor productsExecutor = new GetProductsExecutor(numberOfProducts, productsPerThread, baseUrl);
-//            productsExecutor.pushProductsToMongo();
+            System.out.println("Start processing products");
+            GetProductsExecutor productsExecutor = new GetProductsExecutor(numberOfProducts, productsPerThread, baseUrl);
+            productsExecutor.pushProductsToMongo();
+            System.out.println("All products pushed to mongo");
         } else {
             System.out.println("Invalid arguments");
         }

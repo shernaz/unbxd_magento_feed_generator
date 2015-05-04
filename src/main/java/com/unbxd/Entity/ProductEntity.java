@@ -16,17 +16,11 @@ import java.util.Properties;
 public class ProductEntity extends AbstractEntity
 {
 
-    private List<DBObject> products;
     public ProductEntity(String iSiteName) throws IOException {
         super(iSiteName);
-    }
-
-    public ProductEntity setCollection() {
-
-        this.collectionName = "products_" + this.iSiteName;
-        this.dao.setCollection(this.collectionName);
         this.setUniqueField("uniqueId");
-        return this;
+        this.setCollection("products_");
     }
+
 
 }

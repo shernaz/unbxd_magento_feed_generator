@@ -28,6 +28,11 @@ public class AbstractEntity
         this.uniqueField = "";
     }
 
+    protected void setCollection(String prefix) {
+        this.collectionName = prefix + this.iSiteName;
+        this.dao.setCollection(this.collectionName);
+    }
+
     protected void setUniqueField(String uniqueField) {
         this.uniqueField = uniqueField;
     }
