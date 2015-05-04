@@ -34,7 +34,7 @@ public class SchemaEntity
 
     public boolean push() throws IOException {
         AbstractDAO schemaDAO = new AbstractDAO();
-        schemaDAO.setCollection("schema_" + iSiteName);
+        schemaDAO.setCollection("schema_" + this.iSiteName);
         schemaDAO.insertDocuments(this.schemas);
         return true;
     }

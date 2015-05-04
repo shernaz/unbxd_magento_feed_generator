@@ -7,6 +7,7 @@ import com.mongodb.*;
 import com.unbxd.UnbxdProperties;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 
@@ -26,7 +27,11 @@ public class AbstractDAO {
             unbxdProperties = new UnbxdProperties();
             properties = unbxdProperties.getProperties();
             dbName = properties.getProperty("MONGO_DB");
-            this.mongoClient = new MongoClient();
+            MongoClientOptions options = MongoClientOptions.builder()
+                    .connectionsPerHost(100)
+                    .autoConnectRetry(true)
+                    .build();
+            this.mongoClient = new MongoClient("localhost", options);
             this.db = mongoClient.getDB(dbName);
             this.collectionName = "";
         }
@@ -39,7 +44,15 @@ public class AbstractDAO {
     }
 
     public AbstractDAO insertDocuments(List<DBObject> documents) {
-        this.collection.insert(documents);
+//        DBObject document1 = new BasicDBObject();
+//        document1.put("name", "Kiran");
+//        this.collection.insert(document1);
+        try {
+            this.collection.insert(documents);
+        } catch (Exception ex) {
+            System.out.println("UNBXD_EXCEPTION: " + ex.getMessage());
+        }
+
         return this;
     }
 

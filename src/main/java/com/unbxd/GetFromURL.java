@@ -27,10 +27,10 @@ public class GetFromURL {
     public GetFromURL(String url) {
         this.url = url;
         this.response = "";
+        this.callURL();
     }
 
     public GetFromURL callURL() {
-        System.out.println("Requeted URL:" + this.url);
         StringBuilder sb = new StringBuilder();
         URLConnection urlConn = null;
         InputStreamReader in = null;
@@ -56,7 +56,7 @@ public class GetFromURL {
             throw new RuntimeException("Exception while calling URL:"+ this.url, e);
         }
 
-        this.response = sb.toString();
+        this.response = sb.toString().trim();
         return this;
     }
 
@@ -65,7 +65,6 @@ public class GetFromURL {
     }
 
     public JSONObject getJSONResponse() throws JSONException {
-        System.out.println(this.response.trim());
-        return new JSONObject(this.response.trim());
+        return new JSONObject(this.response);
     }
 }
