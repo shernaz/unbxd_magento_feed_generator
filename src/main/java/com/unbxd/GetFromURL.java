@@ -51,18 +51,11 @@ public class GetFromURL {
         URLConnection urlConn = null;
         System.out.println("Calling url: " + this.url);
         if(!this.username.equals("")) {
-            System.out.println("Including authentication headers");
             String userpass = this.username + ":" + this.password;
-//            String encoded = new sun.misc.BASE64Encoder().encode (userpass.getBytes());
-            String basicAuth = null;
-//            try {
-//                basicAuth = DatatypeConverter.printBase64Binary(userpass.getBytes("UTF-8"));
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            }
+            String basicAuth = "";
             byte[] encodedBytes = Base64.encodeBase64(userpass.getBytes());
-            basicAuth = "Basic " + encodedBytes;
-            urlConn.setRequestProperty("Authorization", basicAuth);
+            basicAuth = "Basic " + new String(encodedBytes);
+            urlConn.setRequestProperty("Authorization", basicAuth.trim());
         }
         InputStreamReader in = null;
         try {
