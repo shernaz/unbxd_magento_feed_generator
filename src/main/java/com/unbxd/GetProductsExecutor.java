@@ -29,25 +29,28 @@ public class GetProductsExecutor {
         this.executor = Executors.newFixedThreadPool(this.numberOfConcurrentThreads);
         this.list = new ArrayList<Future<Boolean>>();
     }
-    public void pushProductsToMongo() {
+    public void pushProductsToMongo(String iSiteName) {
         for (int i = 0; i < this.totalNumberOfThreadsRequired; i++) {
-            Callable<Boolean> worker = new PushToMongoCallable(i, this.baseUrl, this.numberOfProductsPerThread);
+            Callable<Boolean> worker = new PushToMongoCallable(i, this.baseUrl, this.numberOfProductsPerThread, iSiteName);
             Future<Boolean> submit = this.executor.submit(worker);
             this.list.add(submit);
         }
-        for (Future<Boolean> future : list) {
-            try {
-                if(future.get()) {
-                    System.out.println("Callable returned true");
-                } else {
-                    System.out.println("Callable returned false");
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
+        int i = 0;
+//        for (Future<Boolean> future : list) {
+//            try {
+//                if(future.get()) {
+//                    System.out.println("Products inserted for page: " + i);
+//                } else {
+//                    System.out.println("ERROR : Products not inserted for page: " + i);
+//                }
+//
+//                i++;
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            } catch (ExecutionException e) {
+//                e.printStackTrace();
+//            }
+//        }
         executor.shutdown();
     }
 }

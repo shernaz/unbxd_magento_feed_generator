@@ -31,10 +31,11 @@ public class App
                 schemaEntity.upsert(schemas.getJSONObject(i));
             }
             System.out.println("Schema inserted into mongo");
+            // Schema processed
 
             System.out.println("Start processing products");
             GetProductsExecutor productsExecutor = new GetProductsExecutor(numberOfProducts, productsPerThread, baseUrl);
-            productsExecutor.pushProductsToMongo();
+            productsExecutor.pushProductsToMongo(arguments.iSiteName);
             System.out.println("All products pushed to mongo");
         } else {
             System.out.println("Invalid arguments");
