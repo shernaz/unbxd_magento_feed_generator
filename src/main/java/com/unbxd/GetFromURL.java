@@ -50,17 +50,18 @@ public class GetFromURL {
         StringBuilder sb = new StringBuilder();
         URLConnection urlConn = null;
         System.out.println("Calling url: " + this.url);
-        if(!this.username.equals("")) {
-            String userpass = this.username + ":" + this.password;
-            String basicAuth = "";
-            byte[] encodedBytes = Base64.encodeBase64(userpass.getBytes());
-            basicAuth = "Basic " + new String(encodedBytes);
-            urlConn.setRequestProperty("Authorization", basicAuth.trim());
-        }
+
         InputStreamReader in = null;
         try {
             URL url = new URL(this.url);
             urlConn = url.openConnection();
+            if(!this.username.equals("")) {
+                String userpass = this.username + ":" + this.password;
+                String basicAuth = "";
+                byte[] encodedBytes = Base64.encodeBase64(userpass.getBytes());
+                basicAuth = "Basic " + new String(encodedBytes);
+                urlConn.setRequestProperty("Authorization", basicAuth.trim());
+            }
             if (urlConn != null)
                 urlConn.setReadTimeout(60 * 1000);
             if (urlConn != null && urlConn.getInputStream() != null) {
