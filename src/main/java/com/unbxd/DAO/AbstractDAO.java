@@ -3,48 +3,30 @@ package com.unbxd.DAO;
 /**
  * Created by albin on 5/2/15.
  */
+
 import com.mongodb.*;
-import com.unbxd.UnbxdProperties;
+import com.unbxd.MongoConnector;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Properties;
-
-
 import java.util.List;
 
 public class AbstractDAO {
-    private UnbxdProperties unbxdProperties;
-    private Properties properties;
-    private String dbName;
     private String collectionName;
-    private MongoClient mongoClient;
-    private DB db;
-    private DBCollection collection;
+    private static DBCollection collection;
+    private MongoConnector connector;
 
     public AbstractDAO() throws IOException {
-        if (null == this.db || null == this.collection){
-
-            unbxdProperties = UnbxdProperties.getInstance();
-            dbName = unbxdProperties.getProperty("MONGO_DB");
-            MongoClientOptions options = MongoClientOptions.builder()
-                    .connectionsPerHost(100)
-                    .autoConnectRetry(true)
-                    .socketKeepAlive(true)
-                    .build();
-            this.mongoClient = new MongoClient(new ServerAddress("localhost"), options);
-            this.db = mongoClient.getDB(dbName);
-            this.collectionName = "";
-        }
+        connector = MongoConnector.getInstance();
+        this.collectionName = "";
     }
 
     public AbstractDAO setCollection(String collectionName) {
         this.collectionName = collectionName;
-        this.collection = this.db.getCollection(collectionName);
+        this.collection = this.connector.db.getCollection(collectionName);
         return this;
     }
     public DB getDb() {
-        return this.db;
+        return this.connector.db;
     }
 
     public DBCollection getCollection() {
@@ -62,7 +44,9 @@ public class AbstractDAO {
     }
 
     public AbstractDAO insertDocument(DBObject document) {
-        this.collection.insert(document);
+        if (!this.collectionName.equals("")) {
+            this.collection.insert(document);
+        }
         return this;
     }
 

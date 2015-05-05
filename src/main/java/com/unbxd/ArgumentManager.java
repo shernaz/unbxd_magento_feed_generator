@@ -31,7 +31,7 @@ public class ArgumentManager {
             throw new Exception("Invalid number of arguments");
         }
         allowedArgs = new String[]{
-                "baseurl", "per-thread", "site-name", "secret-key", "username", "password"
+                "sizeurl", "per-thread", "site-name", "secret-key", "username", "password"
         };
 
 
@@ -50,7 +50,7 @@ public class ArgumentManager {
         if(!this.baseUrl.equals("") && this.productsPerThread !=0 && !this.iSiteName.equals("") && !this.secretKey.equals("")) {
             return true;
         }
-        System.out.println("Either of these are not set:\nbaseurl\tper-thread\tsite-name\tsecret-key");
+        System.out.println("Either of these are not set:\nsizeurl\tper-thread\tsite-name\tsecret-key");
         return false;
     }
 
@@ -58,7 +58,7 @@ public class ArgumentManager {
         key = key.substring(2);
 
         if (Arrays.asList(this.allowedArgs).contains(key)) {
-            if(key.equals("baseurl")) {
+            if (key.equals("sizeurl")) {
                 this.baseUrl = value;
             } else if(key.equals("per-thread")) {
                 this.productsPerThread = Integer.parseInt(value);

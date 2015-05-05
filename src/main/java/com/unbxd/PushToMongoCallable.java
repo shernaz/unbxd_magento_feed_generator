@@ -49,7 +49,6 @@ public class PushToMongoCallable implements Callable<Boolean> {
             if (json.getJSONObject("feed").getJSONObject("catalog").has("items")) {
                 System.out.println("JSON response has products");
                 JSONArray products = json.getJSONObject("feed").getJSONObject("catalog").getJSONObject("items").getJSONArray("add");
-                System.out.println("PRODUCTS TO ADD: " + products.toString());
                 ProductEntity productEntity = new ProductEntity(this.iSiteName);
 
                 System.out.println("Inserting products for page: " + this.pageNumber);

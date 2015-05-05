@@ -46,6 +46,7 @@ public class GetProductsExecutor {
 //            try {
 //                if(future.get()) {
 //                    System.out.println("Products inserted for page: " + i);
+
 //                } else {
 //                    System.out.println("ERROR : Products not inserted for page: " + i);
 //                }
