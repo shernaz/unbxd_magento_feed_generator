@@ -8,10 +8,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -56,6 +54,7 @@ public class GetFromURL {
             URL url = new URL(this.url);
             urlConn = url.openConnection();
             if(!this.username.equals("")) {
+                System.out.println("Setting authentiacation");
                 String userpass = this.username + ":" + this.password;
                 String basicAuth = "";
                 byte[] encodedBytes = Base64.encodeBase64(userpass.getBytes());

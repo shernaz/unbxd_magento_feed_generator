@@ -3,8 +3,10 @@ package com.unbxd;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by albin on 4/30/15.
@@ -17,11 +19,15 @@ public class GetProductsExecutor {
     int numberOfConcurrentThreads;
     int totalNumberOfThreadsRequired;
     String baseUrl;
+    String username;
+    String password;
 
-    public GetProductsExecutor(int numberOfProducts, int productsPerThread, String baseUrl) throws IOException {
+    public GetProductsExecutor(int numberOfProducts, int productsPerThread, String baseUrl, String username, String password) throws IOException {
         this.baseUrl = baseUrl;
         UnbxdProperties propertiesObj = new UnbxdProperties();
 
+        this.username = username;
+        this.password = password;
         this.numberOfProducts = numberOfProducts;
         this.numberOfProductsPerThread = productsPerThread;
         this.numberOfConcurrentThreads = Integer.parseInt(propertiesObj.getProperty("NUMBER_OF_CUNCURRENT_THREADS"));
@@ -31,7 +37,7 @@ public class GetProductsExecutor {
     }
     public void pushProductsToMongo(String iSiteName) {
         for (int i = 0; i < this.totalNumberOfThreadsRequired; i++) {
-            Callable<Boolean> worker = new PushToMongoCallable(i, this.baseUrl, this.numberOfProductsPerThread, iSiteName);
+            Callable<Boolean> worker = new PushToMongoCallable(i, this.baseUrl, this.numberOfProductsPerThread, iSiteName, this.username, this.password);
             Future<Boolean> submit = this.executor.submit(worker);
             this.list.add(submit);
         }

@@ -4,8 +4,6 @@ import com.unbxd.Entity.SchemaEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Iterator;
-
 /**
  * Hello world!
  *
@@ -33,7 +31,8 @@ public class App
 
             // Process Schema separately
             System.out.println("Processing schema");
-            GetFromURL getSchemaFromUrl = new GetFromURL(arguments.baseUrl + "&limit=1");
+            URLManager urlManager = new URLManager(arguments.baseUrl);
+            GetFromURL getSchemaFromUrl = new GetFromURL(urlManager.getProductsUrl() + "&limit=1", arguments.username, arguments.password);
             JSONObject schemaObject = getSchemaFromUrl.getJSONResponse();
             JSONArray schemas = schemaObject.getJSONObject("feed").getJSONObject("catalog").getJSONArray("schema");
             SchemaEntity schemaEntity = new SchemaEntity(arguments.iSiteName);
@@ -44,8 +43,8 @@ public class App
             // Schema processed
 
             System.out.println("Start processing products");
-            URLManager urlManager = new URLManager(arguments.baseUrl);
-            GetProductsExecutor productsExecutor = new GetProductsExecutor(numberOfProducts, productsPerThread, urlManager.getProductsUrl());
+
+            GetProductsExecutor productsExecutor = new GetProductsExecutor(numberOfProducts, productsPerThread, urlManager.getProductsUrl(), arguments.username, arguments.password);
             productsExecutor.pushProductsToMongo(arguments.iSiteName);
             System.out.println("All products pushed to mongo");
         } else {
