@@ -1,6 +1,7 @@
 package com.unbxd;
 
 import com.unbxd.Entity.SchemaEntity;
+import com.unbxd.Entity.SizeEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -26,6 +27,8 @@ public class App
             }
 
             int numberOfProducts = numberOfProductsResponse.getJSONResponse().getInt("size");
+            SizeEntity sizeEntity = new SizeEntity(arguments.iSiteName);
+            sizeEntity.setSize(numberOfProducts);
 
             System.out.println("NUM PRODUCTS: " + numberOfProducts);
 
@@ -47,6 +50,11 @@ public class App
             GetProductsExecutor productsExecutor = new GetProductsExecutor(numberOfProducts, productsPerThread, urlManager.getProductsUrl(), arguments.username, arguments.password);
             productsExecutor.pushProductsToMongo(arguments.iSiteName);
             System.out.println("All products pushed to mongo");
+
+
+            // Generate feed file
+            FeedFileManager fileManager = new FeedFileManager(arguments.iSiteName, arguments.secretKey);
+            fileManager.generateFeedFile();
         } else {
             System.out.println("Invalid arguments");
         }
