@@ -54,7 +54,7 @@ public class App
 
             // Generate feed file
             FeedFileManager fileManager = new FeedFileManager(arguments.iSiteName, arguments.secretKey);
-            fileManager.generateFeedFile();
+            fileManager.generateFeedFile().pushFeed();
         } else {
             System.out.println("Invalid arguments");
         }

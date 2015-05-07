@@ -18,5 +18,13 @@ public class URLManager
         return prodcutsUrl;
     }
 
+    public static String getFeedUploadAPI(String iSiteName, String secretKey) {
+        return "http://feed.unbxdapi.com/upload/v2/" + secretKey + "/" + iSiteName + "?fullimport=true";
+    }
+
+    public static String getFeedUploadAPI(String iSiteName, String secretKey, boolean fullImport) {
+        return "http://feed.unbxdapi.com/upload/v2/" + secretKey + "/" + iSiteName + (fullImport ? "?fullimport=true" : "");
+    }
+
 
 }
