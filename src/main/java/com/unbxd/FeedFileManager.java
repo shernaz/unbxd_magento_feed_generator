@@ -18,32 +18,43 @@ import java.io.PrintWriter;
 public class FeedFileManager {
     protected String iSiteName;
     protected String secretKey;
-    protected String finalString;
 
     public FeedFileManager(String iSiteName, String secretKey) {
         this.iSiteName = iSiteName;
         this.secretKey = secretKey;
-        this.finalString = "";
     }
 
     public FeedFileManager generateFeedFile() throws IOException {
         SchemaEntity schemaEntity = new SchemaEntity(this.iSiteName);
-        String schemaString = schemaEntity.getAllAsString();
-        ProductEntity productEntity = new ProductEntity(this.iSiteName);
-        String productString = productEntity.getAllAsString();
-        this.finalString = "{\n" +
+        String schemaString = schemaEntity.getAsString();
+
+        String startString = "{\n" +
                 "\"feed\": {\n" +
                 "\"catalog\": {\n" +
                 "\"schema\":" + schemaString + ",\n" +
                 "\"add\": {\n" +
-                "\"items\": " + productString + "}\n" +
+                "\"items\": ";
+        String endString = "}\n" +
                 "}\n" +
                 "}\n" +
                 "}";
         PrintWriter out = new PrintWriter("samplefeed.json");
-        out.println(this.finalString);
+        out.println(startString);
+        this.printProductsToFile(out);
+        out.println(endString);
         out.close();
         return this;
+    }
+
+    private void printProductsToFile(PrintWriter out) throws IOException {
+        ProductEntity productEntity = new ProductEntity(this.iSiteName);
+        long count = productEntity.count();
+        int numberOfPages = (int) Math.ceil((double) count / 50000);
+        for (int i = 1; i <= numberOfPages; i++) {
+            System.out.println("printing page " + i);
+            String productString = productEntity.getAsString(50000, i) + (i == numberOfPages ? "" : ",");
+            out.println(productString);
+        }
     }
 
     public void pushFeed() throws IOException {

@@ -39,7 +39,7 @@ public class App
             JSONObject schemaObject = getSchemaFromUrl.getJSONResponse();
             JSONArray schemas = schemaObject.getJSONObject("feed").getJSONObject("catalog").getJSONArray("schema");
             SchemaEntity schemaEntity = new SchemaEntity(arguments.iSiteName);
-            for (int i = 0; i< schemas.length(); i++) {
+            for (int i = 0; i < schemas.length(); i++) {
                 schemaEntity.upsert(schemas.getJSONObject(i));
             }
             System.out.println("Schema inserted into mongo");

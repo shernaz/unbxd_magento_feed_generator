@@ -47,14 +47,12 @@ public class GetFromURL {
     public GetFromURL callURL() {
         StringBuilder sb = new StringBuilder();
         URLConnection urlConn = null;
-        System.out.println("Calling url: " + this.url);
 
         InputStreamReader in = null;
         try {
             URL url = new URL(this.url);
             urlConn = url.openConnection();
             if(!this.username.equals("")) {
-                System.out.println("Setting authentiacation");
                 String userpass = this.username + ":" + this.password;
                 String basicAuth = "";
                 byte[] encodedBytes = Base64.encodeBase64(userpass.getBytes());
@@ -63,7 +61,7 @@ public class GetFromURL {
             }
             if (urlConn != null)
                 urlConn.setReadTimeout(60 * 1000);
-            if (urlConn != null && urlConn.getInputStream() != null) {
+            if (urlConn != null) {
                 in = new InputStreamReader(urlConn.getInputStream(),
                         Charset.defaultCharset());
                 BufferedReader bufferedReader = new BufferedReader(in);
@@ -79,7 +77,6 @@ public class GetFromURL {
         } catch (Exception e) {
             throw new RuntimeException("Exception while calling URL:"+ this.url, e);
         }
-
         this.response = sb.toString().trim();
         return this;
     }

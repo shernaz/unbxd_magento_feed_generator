@@ -44,7 +44,7 @@ public class PushToMongoCallable implements Callable<Boolean> {
         }
 
         JSONObject json = getFromURL.getJSONResponse();
-        System.out.println("Got JSON response for " + this.url);
+        System.out.println("Got JSON response for " + this.pageNumber);
         try {
             if (json.getJSONObject("feed").getJSONObject("catalog").has("add")) {
                 System.out.println("JSON response has products");
@@ -55,12 +55,13 @@ public class PushToMongoCallable implements Callable<Boolean> {
                 for (int i = 0; i < products.length(); i++) {
                     productEntity.upsert(products.getJSONObject(i));
                 }
+                return true;
             } else {
                 System.out.println("JSON response does not have productss");
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        return true;
+        return false;
     }
 }

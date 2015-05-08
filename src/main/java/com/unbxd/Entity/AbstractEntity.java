@@ -47,10 +47,26 @@ public class AbstractEntity
         return this;
     }
 
-    public String getAllAsString() {
+    public String getAsString() {
         DBCursor cursor = this.dao.getCollection().find(new BasicDBObject(), new BasicDBObject("_id", 0));
         String serialize = JSON.serialize(cursor);
         return serialize;
+    }
+
+    public String getAsString(int limit) {
+        DBCursor cursor = this.dao.getCollection().find(new BasicDBObject(), new BasicDBObject("_id", 0)).limit(limit);
+        String serialize = JSON.serialize(cursor);
+        return serialize;
+    }
+
+    public String getAsString(int limit, int pageNumber) {
+        DBCursor cursor = this.dao.getCollection().find(new BasicDBObject(), new BasicDBObject("_id", 0)).skip((pageNumber - 1) * limit).limit(limit);
+        String serialize = JSON.serialize(cursor);
+        return serialize;
+    }
+
+    public long count() {
+        return this.dao.getCollection().getCount();
     }
 
 

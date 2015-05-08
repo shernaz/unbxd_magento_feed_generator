@@ -1,5 +1,7 @@
 package com.unbxd;
 
+import com.unbxd.Entity.ProductEntity;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,10 @@ public class GetProductsExecutor {
         this.executor = Executors.newFixedThreadPool(this.numberOfConcurrentThreads);
         this.list = new ArrayList<Future<Boolean>>();
     }
-    public void pushProductsToMongo(String iSiteName) {
+
+    public void pushProductsToMongo(String iSiteName) throws IOException {
+        ProductEntity productEntity = new ProductEntity(iSiteName);
+        productEntity.setIndex();
         for (int i = 0; i < this.totalNumberOfThreadsRequired; i++) {
             Callable<Boolean> worker = new PushToMongoCallable(i, this.baseUrl, this.numberOfProductsPerThread, iSiteName, this.username, this.password);
             Future<Boolean> submit = this.executor.submit(worker);
