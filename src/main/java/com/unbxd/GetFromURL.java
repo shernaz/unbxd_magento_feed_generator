@@ -60,7 +60,7 @@ public class GetFromURL {
                 urlConn.setRequestProperty("Authorization", basicAuth.trim());
             }
             if (urlConn != null)
-                urlConn.setReadTimeout(60 * 1000);
+                urlConn.setReadTimeout(300 * 1000);
             if (urlConn != null) {
                 in = new InputStreamReader(urlConn.getInputStream(),
                         Charset.defaultCharset());
