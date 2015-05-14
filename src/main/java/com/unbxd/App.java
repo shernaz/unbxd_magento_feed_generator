@@ -19,10 +19,8 @@ public class App
             int productsPerThread = arguments.productsPerThread;
             GetFromURL numberOfProductsResponse;
             if(arguments.username.equals("")) {
-                System.out.println("Without auth");
                 numberOfProductsResponse = new GetFromURL(arguments.baseUrl);
             } else {
-                System.out.println("With auth");
                 numberOfProductsResponse = new GetFromURL(arguments.baseUrl, arguments.username, arguments.password);
             }
 

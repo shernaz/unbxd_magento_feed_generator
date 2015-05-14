@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -25,6 +26,7 @@ public class GetFromURL {
     private String response;
     private String username;
     private String password;
+    private int count;
 
     private JSONObject jsonResponse;
 
@@ -33,6 +35,7 @@ public class GetFromURL {
         this.response = "";
         this.username = "";
         this.password = "";
+        this.count = 0;
         this.callURL();
     }
 
@@ -41,10 +44,15 @@ public class GetFromURL {
         this.response = "";
         this.username = username;
         this.password = password;
+        this.count = 0;
         this.callURL();
     }
 
     public GetFromURL callURL() {
+        if (this.count == 2) {
+            System.out.println("ERROR: Aborting " + this.url);
+            return this;
+        }
         StringBuilder sb = new StringBuilder();
         URLConnection urlConn = null;
 
@@ -74,12 +82,17 @@ public class GetFromURL {
                 }
             }
             in.close();
+        } catch (SocketTimeoutException ex) {
+            this.count++;
+            System.out.println("ERROR: Failed to fetch " + this.url + ". Retrying..");
+            return this.callURL();
         } catch (Exception e) {
             throw new RuntimeException("Exception while calling URL:"+ this.url, e);
         }
         this.response = sb.toString().trim();
         return this;
     }
+
 
     public String getResponse() {
         return this.response.trim();
