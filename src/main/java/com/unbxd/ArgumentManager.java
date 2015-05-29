@@ -14,6 +14,7 @@ public class ArgumentManager {
     public Boolean authentication;
     public String username;
     public String password;
+    public Boolean flushMongo;
     String allowedArgs[];
     String args[];
 
@@ -26,26 +27,24 @@ public class ArgumentManager {
         this.username = "";
         this.password = "";
         this.authentication = false;
+        this.flushMongo = true;
 
         if (args.length % 2 != 0) {
             throw new Exception("Invalid number of arguments");
         }
         allowedArgs = new String[]{
-                "sizeurl", "per-thread", "site-name", "secret-key", "username", "password"
+                "sizeurl", "per-thread", "site-name", "secret-key", "username", "password", "no-flush"
         };
-
-
-
     }
 
     public boolean processArguments() {
         for (int i = 0; i < this.args.length; i++) {
             String key = "", value = "";
-            if (i % 2 == 0) {
-                key = args[i++];
-                value = args[i];
+            key = this.args[i];
+            int numberOfValues = this.processArgument(args, key, i);
+            if (numberOfValues >= 0) {
+                i = i + numberOfValues;
             }
-            this.processArgument(key, value);
         }
         if(!this.baseUrl.equals("") && this.productsPerThread !=0 && !this.iSiteName.equals("") && !this.secretKey.equals("")) {
             return true;
@@ -54,29 +53,46 @@ public class ArgumentManager {
         return false;
     }
 
-    private boolean processArgument(String key, String value) {
-        key = key.substring(2);
 
+    /*
+    Input: args, key, index
+    Return: number of expected values for the key passed
+    Variables used:
+        values: number of expected values for the currently parsing argument
+    From the arguments array, sets the corresponding values based on the current key
+    */
+    private int processArgument(String[] args, String key, int i) {
+        key = key.substring(2);
+        int values = 0;
         if (Arrays.asList(this.allowedArgs).contains(key)) {
             if (key.equals("sizeurl")) {
-                this.baseUrl = value;
-            } else if(key.equals("per-thread")) {
-                this.productsPerThread = Integer.parseInt(value);
-            } else if(key.equals("site-name")) {
-                this.iSiteName = value;
-            } else if(key.equals("secret-key")) {
-                this.secretKey = value;
-            } else if(key.equals("username")) {
-                this.username = value;
+                this.baseUrl = args[i + 1];
+                values = 1;
+            } else if (key.equals("per-thread")) {
+                this.productsPerThread = Integer.parseInt(args[i + 1]);
+                values = 1;
+            } else if (key.equals("site-name")) {
+                this.iSiteName = args[i + 1];
+                values = 1;
+            } else if (key.equals("secret-key")) {
+                this.secretKey = args[i + 1];
+                values = 1;
+            } else if (key.equals("username")) {
+                this.username = args[i + 1];
                 this.authentication = true;
-            } else if(key.equals("password")) {
-                this.password = value;
+                values = 1;
+            } else if (key.equals("password")) {
+                this.password = args[i + 1];
+                values = 1;
+            } else if (key.equals("no-flush")) {
+                this.flushMongo = false;
+                values = 0;
             } else {
-                return false;
+                values = -1;
             }
-        } else {
-            return false;
+
+            return values;
         }
-        return true;
+        return -1;
     }
 }

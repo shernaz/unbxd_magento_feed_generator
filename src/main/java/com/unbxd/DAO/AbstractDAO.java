@@ -5,6 +5,7 @@ package com.unbxd.DAO;
  */
 
 import com.mongodb.*;
+import com.unbxd.General;
 import com.unbxd.MongoConnector;
 
 import java.io.IOException;
@@ -68,6 +69,13 @@ public class AbstractDAO {
     public AbstractDAO removeDocument(DBObject document) {
         this.collection.remove(document);
         return this;
+    }
+
+    public void clearData(String iSiteName) {
+
+        iSiteName = General.formatISiteName(iSiteName);
+        this.connector.db.getCollection("products_" + iSiteName).drop();
+        this.connector.db.getCollection("schema_" + iSiteName).drop();
     }
 
 }

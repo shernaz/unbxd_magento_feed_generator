@@ -1,0 +1,3 @@
+- Added a new argument no-flush
+- Changed the logic for parsing arguments
+- Clear all the data in the products and schema collection before processing the schema
