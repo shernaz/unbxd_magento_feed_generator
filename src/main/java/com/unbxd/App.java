@@ -1,5 +1,6 @@
 package com.unbxd;
 
+import com.unbxd.DAO.AbstractDAO;
 import com.unbxd.Entity.SchemaEntity;
 import com.unbxd.Entity.SizeEntity;
 import org.json.JSONArray;
@@ -29,6 +30,13 @@ public class App
             sizeEntity.setSize(numberOfProducts);
 
             System.out.println("NUM PRODUCTS: " + numberOfProducts);
+
+            //Flush mongo collection
+            if (arguments.flushMongo) {
+                System.out.println("Flusing mongo");
+                AbstractDAO abstractDAO = new AbstractDAO();
+                abstractDAO.clearData(arguments.iSiteName);
+            }
 
             // Process Schema separately
             System.out.println("Processing schema");
