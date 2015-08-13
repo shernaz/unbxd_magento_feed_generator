@@ -16,7 +16,6 @@ public class App
     public static void main(String[] args) throws Exception {
         ArgumentManager arguments = new ArgumentManager(args);
         if(arguments.processArguments()) {
-//            String baseUrl = "http://magento-sandbox.cloudapp.net/magento/index.php/recscore/catalog/products?site=Main%20Website&auth=aHR0cDovL21hZ2VudG8tc2FuZGJveC5jbG91ZGFwcC5uZXQvbW";
             int productsPerThread = arguments.productsPerThread;
             GetFromURL numberOfProductsResponse;
             if(arguments.username.equals("")) {

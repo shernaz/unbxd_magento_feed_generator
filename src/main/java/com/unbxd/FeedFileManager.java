@@ -66,8 +66,12 @@ public class FeedFileManager {
         File file = new File(this.feedFileName);
         MultipartEntity entity = new MultipartEntity();
         entity.addPart("file", new FileBody(file));
+        System.out.println("Pushing feed file " + this.feedFileName);
+        int timeout = 3600 * 1000;
         HttpResponse returnResponse = Request.Post(url)
                 .body(entity)
+                .connectTimeout(timeout)
+                .socketTimeout(timeout)
                 .execute().returnResponse();
 
         System.out.println("Response status: " + returnResponse.getStatusLine().getStatusCode());
